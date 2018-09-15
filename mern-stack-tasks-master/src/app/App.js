@@ -117,7 +117,7 @@ class App extends Component {
         <nav className="light-blue darken-4">
           <div className="container">
             <div className="nav-wrapper">
-              <a href="#" className="brand-logo">MERN Stack</a>
+              <a href="#" className="brand-logo">Pagina para </a>
             </div>
           </div>
         </nav>
