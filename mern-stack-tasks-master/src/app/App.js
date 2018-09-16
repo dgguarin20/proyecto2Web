@@ -5,8 +5,10 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      title: '',
-      description: '',
+      Dia: '',
+      HoraLlegada: '',
+      HoraSalida:'',
+      idMasajista:'',
       _id: '',
       tasks: []
     };
@@ -30,7 +32,7 @@ class App extends Component {
           Dia: this.state.Dia,
           HoraLlegada: this.state.HoraLlegada,
           HoraSalida: this.state.HoraSalida,
-          idMasajista: this.state._id
+          idMasajista: this.state.idMasajista
         }),
         headers: {
           'Accept': 'application/json',
@@ -91,7 +93,7 @@ class App extends Component {
           Dia: data.Dia,
           HoraLlegada: data.HoraLlegada,
           HoraSalida: data.HoraSalida,
-          idMasajista: data.idMasajista,
+          idMasajista: data.HoraSalida,
           _id: data._id
         });
       });
@@ -130,17 +132,22 @@ class App extends Component {
                   <form onSubmit={this.addTask}>
                     <div className="row">
                       <div className="input-field col s12">
-                        <input name="Dia" onChange={this.handleChange} value={this.state.title} type="text" placeholder="Dia" autoFocus/>
+                        <input name="Dia" onChange={this.handleChange} value={this.state.Dia} type="text" placeholder="Task Dia" autoFocus/>
                       </div>
                     </div>
                     <div className="row">
                       <div className="input-field col s12">
-                        <textarea name="HoraLlegada" onChange={this.handleChange} value={this.state.description} cols="30" rows="10" placeholder="HoraLlegada" className="materialize-textarea"></textarea>
+                        <textarea name="HoraLlegada" onChange={this.handleChange} value={this.state.HoraLlegada} cols="30" rows="10" placeholder="Task HoraLlegada" className="materialize-textarea"></textarea>
                       </div>
                     </div>
                     <div className="row">
                       <div className="input-field col s12">
-                        <textarea name="HoraSalida" onChange={this.handleChange} value={this.state.description} cols="30" rows="10" placeholder="Hora Salida" className="materialize-textarea"></textarea>
+                        <textarea name="HoraSalida" onChange={this.handleChange} value={this.state.HoraSalida} cols="30" rows="10" placeholder="Task HoraSalida" className="materialize-textarea"></textarea>
+                      </div>
+                      <div className="row">
+                      <div className="input-field col s12">
+                        <textarea name= "idMasajista" onChange={this.handleChange} value={this.state.idMasajista} cols="30" rows="10" placeholder="Task idMasajista" className="materialize-textarea"></textarea>
+                      </div>
                       </div>
                     </div>
 
@@ -156,7 +163,7 @@ class App extends Component {
                 <thead>
                   <tr>
                     <th>Dia</th>
-                    <th>Hora Salida</th>
+                    <th>Hora Llegada</th>
                     <th>Hora Salida</th>
                   </tr>
                 </thead>
@@ -165,8 +172,9 @@ class App extends Component {
                     this.state.tasks.map(task => {
                       return (
                         <tr key={task._id}>
-                          <td>{task.title}</td>
-                          <td>{task.description}</td>
+                          <td>{task.Dia}</td>
+                          <td>{task.HoraLlegada}</td>
+                          <td>{task.HoraSalida}</td>
                           <td>
                             <button onClick={() => this.deleteTask(task._id)} className="btn light-blue darken-4">
                               <i className="material-icons">delete</i> 
