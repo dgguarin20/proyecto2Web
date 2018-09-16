@@ -18,16 +18,16 @@ router.get('/:id', async (req, res) => {
 
 // ADD a new task
 router.post('/', async (req, res) => {
-  const { Dia, HoraLlegada, HoraSalida, idMasajista } = req.body;
-  const task = new Task({Dia, HoraLlegada, HoraSalida, idMasajista });
+  const { startDate, HoraLlegada, HoraSalida, idMasajista } = req.body;
+  const task = new Task({startDate, HoraLlegada, HoraSalida, idMasajista });
   await task.save();
   res.json({status: 'Task Saved'});
 });
 
 // UPDATE a new task
 router.put('/:id', async (req, res) => {
-  const { Dia, HoraLlegada, HoraSalida, idMasajista } = req.body;
-  const newTask = {Dia, HoraLlegada, HoraSalida, idMasajista };
+  const { startDate, HoraLlegada, HoraSalida, idMasajista } = req.body;
+  const newTask = {startDate, HoraLlegada, HoraSalida, idMasajista };
   await Task.findByIdAndUpdate(req.params.id, newTask);
   res.json({status: 'Task Updated'});
 });

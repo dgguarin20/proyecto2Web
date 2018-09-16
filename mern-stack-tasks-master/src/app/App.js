@@ -1,25 +1,47 @@
 import React, { Component } from 'react';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+import './css/react-datepicker.css';
+
 
 class App extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      Dia: '',
+      startDate: moment(),
       HoraLlegada: '',
       HoraSalida:'',
       idMasajista:'',
       _id: '',
-      tasks: []
+      shown: true,
+      tasks: [],
+      taskclient: []
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleChangeD = this.handleChangeD.bind(this);
+    this.toggle = this.toggle.bind(this);
     this.addTask = this.addTask.bind(this);
   }
 
   handleChange(e) {
     const { name, value } = e.target;
     this.setState({
-      [name]: value
+      [name]: value,
+      
+    });
+  }
+  	
+	toggle() {
+		this.setState({
+			shown: !this.state.shown
+    });
+    this.fetchTasksC();
+	}
+		
+  handleChangeD(date) {
+    this.setState({
+      startDate: date
     });
   }
 
@@ -29,7 +51,7 @@ class App extends Component {
       fetch(`/api/tasks/${this.state._id}`, {
         method: 'PUT',
         body: JSON.stringify({
-          Dia: this.state.Dia,
+          startDate: this.state.startDate,
           HoraLlegada: this.state.HoraLlegada,
           HoraSalida: this.state.HoraSalida,
           idMasajista: this.state.idMasajista
@@ -42,7 +64,7 @@ class App extends Component {
         .then(res => res.json())
         .then(data => {
           window.M.toast({html: 'Task Updated'});
-          this.setState({_id: '', Dia: '', HoraLlegada: '', HoraSalida:'',idMasajista:''});
+          this.setState({_id: '', startDate: '', HoraLlegada: '', HoraSalida:'',idMasajista:''});
           this.fetchTasks();
         });
     } else {
@@ -58,7 +80,7 @@ class App extends Component {
         .then(data => {
           console.log(data);
           window.M.toast({html: 'Task Saved'});
-          this.setState({Dia: '', HoraLlegada: '', HoraSalida: '', idMasajista:''});
+          this.setState({startDate: '', HoraLlegada: '', HoraSalida: '', idMasajista:''});
           this.fetchTasks();
         })
         .catch(err => console.error(err));
@@ -90,7 +112,7 @@ class App extends Component {
       .then(data => {
         console.log(data);
         this.setState({
-          Dia: data.Dia,
+          startDate: data.startDate,
           HoraLlegada: data.HoraLlegada,
           HoraSalida: data.HoraSalida,
           idMasajista: data.HoraSalida,
@@ -111,8 +133,24 @@ class App extends Component {
         console.log(this.state.tasks);
       });
   }
+  fetchTasksC() {
+    fetch('/api/cliente')
+      .then(res => res.json())
+      .then(data => {
+        this.setState({taskclient: data});
+        console.log(this.state.taskclient);
+      });
+  }
 
   render() {
+    var shown = {
+			display: this.state.shown ? "block" : "none"
+		};
+		
+		var hidden = {
+			display: this.state.shown ? "none" : "block"
+    }
+    
     return (
       <div>
         {/* NAVIGATION */}
@@ -130,14 +168,15 @@ class App extends Component {
               <div className="card">
                 <div className="card-content">
                   <form onSubmit={this.addTask}>
-                    <div className="row">
-                      <div className="input-field col s12">
-                        <input name="Dia" onChange={this.handleChange} value={this.state.Dia} type="text" placeholder="Task Dia" autoFocus/>
-                      </div>
+                    <div className= "row">
+                      <DatePicker
+                        selected={this.state.startDate}
+                        onChange={this.handleChangeD}
+                      />
                     </div>
                     <div className="row">
                       <div className="input-field col s12">
-                        <textarea name="HoraLlegada" onChange={this.handleChange} value={this.state.HoraLlegada} cols="30" rows="10" placeholder="Task HoraLlegada" className="materialize-textarea"></textarea>
+                        <input name="HoraLlegada" onChange={this.handleChange} value={this.state.HoraLlegada} type="text" placeholder="Task HoraLlegada" autoFocus/>
                       </div>
                     </div>
                     <div className="row">
@@ -157,12 +196,19 @@ class App extends Component {
                   </form>
                 </div>
               </div>
-            </div>
-            <div className="col s7">
+            </div>  
+            <br></br>
+            <button onClick={() =>this.toggle()} className="btn light-blue darken-4">
+                <span style={shown}>Citas</span>   
+                <span style={hidden}>horario</span>   
+            </button> 
+           < br></br>    
+            <div className="col s7" style={shown}>
+        
               <table>
                 <thead>
                   <tr>
-                    <th>Dia</th>
+                    <th>dia</th>
                     <th>Hora Llegada</th>
                     <th>Hora Salida</th>
                   </tr>
@@ -172,7 +218,7 @@ class App extends Component {
                     this.state.tasks.map(task => {
                       return (
                         <tr key={task._id}>
-                          <td>{task.Dia}</td>
+                          <td>{task.startDate}</td>
                           <td>{task.HoraLlegada}</td>
                           <td>{task.HoraSalida}</td>
                           <td>
@@ -182,6 +228,36 @@ class App extends Component {
                             <button onClick={() => this.editTask(task._id)} className="btn light-blue darken-4" style={{margin: '4px'}}>
                               <i className="material-icons">edit</i>
                             </button>
+                          </td>
+                        </tr>
+                      )
+                    })
+                  }
+                </tbody>
+              </table>
+            </div>
+            <div className="col s7" style={hidden}>
+        
+              <table>
+                <thead>
+                  <tr>
+                    <th>dia</th>
+                    <th>Hora Llegada</th>
+                    <th>Hora Salida</th>
+                    <th>nombre Cliente</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  { 
+                    this.state.taskclient.map(task => {
+                      return (
+                        <tr key={task._id}>
+                          <td>{task.startDate}</td>
+                          <td>{task.HoraLlegada}</td>
+                          <td>{task.HoraSalida}</td>
+                          <td>{task.nombre}</td>
+                          <td>
+
                           </td>
                         </tr>
                       )
