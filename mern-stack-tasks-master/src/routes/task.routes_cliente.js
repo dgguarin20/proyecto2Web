@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const Taskcliente = require('../models/task_cliente');
+const taski = require('../model/task')
 
 router.get('/', async (req, res) => {
     const tasks = await Taskcliente.find();
@@ -14,5 +15,18 @@ router.get('/', async (req, res) => {
     await task.save();
     res.json({status: 'Task Saved'});
   });
+
+  router.put('/', async (req, res) => {
+    const startDate = req.body;
+    taski.find({
+      startDate: startDate
+    },(err,users) =>{
+      return users;
+    }
+    );
+  });
+  
+
+
 
   module.exports = router;

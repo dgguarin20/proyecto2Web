@@ -4,7 +4,7 @@ import moment from 'moment';
 import './css/react-datepicker.css';
 import './style.css';
 
-class App extends Component {
+class cliente extends Component {
 
   constructor(props) {
     super(props);
@@ -21,8 +21,8 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleChangeD = this.handleChangeD.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.lookdate = this.lookdate(this);
     this.addTask = this.addTask.bind(this);
-    
   }
 
   handleChange(e) {
@@ -45,49 +45,11 @@ class App extends Component {
       startDate: date
     });
   }
-
-  addTask(e) {
-    e.preventDefault();
-    if(this.state._id) {
-      fetch(`/api/tasks/${this.state._id}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          startDate: this.state.startDate,
-          HoraLlegada: this.state.HoraLlegada,
-          HoraSalida: this.state.HoraSalida,
-          idMasajista: this.state.idMasajista
-        }),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      })
-        .then(res => res.json())
-        .then(data => {
-          window.M.toast({html: 'Task Updated'});
-          this.setState({_id: '', startDate: '', HoraLlegada: '', HoraSalida:'',idMasajista:''});
-          this.fetchTasks();
-        });
-    } else {
-      fetch('/api/tasks', {
-        method: 'POST',
-        body: JSON.stringify(this.state),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data);
-          window.M.toast({html: 'Task Saved'});
-          this.setState({startDate: '', HoraLlegada: '', HoraSalida: '', idMasajista:''});
-          this.fetchTasks();
-        })
-        .catch(err => console.error(err));
-    }
+  lookdate(){
+    const fecha = e.target;
 
   }
+  
 
   deleteTask(id) {
     if(confirm('Are you sure you want to delete it?')) {
@@ -107,20 +69,7 @@ class App extends Component {
     }
   }
 
-  editTask(id) {
-    fetch(`/api/tasks/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        this.setState({
-          startDate: data.startDate,
-          HoraLlegada: data.HoraLlegada,
-          HoraSalida: data.HoraSalida,
-          idMasajista: data.HoraSalida,
-          _id: data._id
-        });
-      });
-  }
+
 
   componentDidMount() {
     this.fetchTasks();
@@ -169,33 +118,18 @@ class App extends Component {
             <div className="col s5">
               <div className="card">
                 <div className="card-content">
-                  <form onSubmit={this.addTask}>
+                  
                     <div className= "row">
                       <DatePicker
                         selected={this.state.startDate}
                         onChange={this.handleChangeD}
                       />
                     </div>
-                    <div className="row">
-                      <div className="input-field col s12">
-                        <input name="HoraLlegada" onChange={this.handleChange} value={this.state.HoraLlegada} type="text" placeholder="Task HoraLlegada" autoFocus/>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="input-field col s12">
-                        <textarea name="HoraSalida" onChange={this.handleChange} value={this.state.HoraSalida} cols="30" rows="10" placeholder="Task HoraSalida" className="materialize-textarea"></textarea>
-                      </div>
-                      <div className="row">
-                      <div className="input-field col s12">
-                        <textarea name= "idMasajista" onChange={this.handleChange} value={this.state.idMasajista} cols="30" rows="10" placeholder="Task idMasajista" className="materialize-textarea"></textarea>
-                      </div>
-                      </div>
-                    </div>
-
-                    <button type="submit" className="btn light-blue ">
+                   
+                    <button onClick={()=>this.lookdate()}  type="submit" className="btn light-blue ">
                       Send 
                     </button>
-                  </form>
+                
                 </div>
               </div>
             </div>  
@@ -255,7 +189,7 @@ class App extends Component {
                           <td>{task.startDate}</td>
                           <td>{task.HoraLlegada}</td>
                           <td>{task.HoraSalida}</td>
-                          <td>{task.nombre}</td>
+                          <td>{idMasajista}</td>
                           <td>
 
                           </td>
@@ -274,4 +208,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default cliente;
